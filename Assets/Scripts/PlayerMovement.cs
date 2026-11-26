@@ -3,8 +3,12 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     public float speed = 5f;
-    public float jumpForce = 8f;
+    public float jumpForce = 7f;
+    public Transform groundCheck;
+    public LayerMask groundLayer;
     private Rigidbody2D rb;
+    private Animator animator;
+    private bool isGrounded;
     private float moveInput;
 
     void Start()
@@ -17,17 +21,20 @@ public class PlayerMovement : MonoBehaviour
         moveInput = Input.GetAxisRaw("Horizontal");
 
         // Voltear personaje según la dirección
-        if (moveInput > 0)
+        if (moveInput > 0){
             transform.localScale = new Vector3(1, 1, 1);
+        }
         else if (moveInput < 0)
+        {
             transform.localScale = new Vector3(-1, 1, 1);
-
-        // Salto con la barra espaciadora
-        if (Input.GetButtonDown("Jump") && Mathf.Abs(rb.linearVelocity.y) < 0.05f)
+        }
+        isGrounded = Physics2D.OverlapCircle(groundCheck.position, 0.1f, groundLayer);
+        if (Input.GetButtonDown("Jump") && isGrounded)
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
-        }
+        }   
     }
+
 
     void FixedUpdate()
     {
